@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+{% for issue in issues %}
+    <div class="issue">
+        <p><b>Description:</b> {{ issue.description }}</p>
+        <p><b>Category:</b> {{ issue.category }}</p>
+        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
+        <span>Votes: {{ votes_map[issue._id|string] }}</span><br>
+        <h4>Suggestions:</h4>
+        <ul>
+        {% for s in suggestions_map[issue._id|string] %}
+            <li>{{ s.suggestion }}</li>
+        {% endfor %}
+        </ul>
+        <form method="POST" style="display:inline-block; margin-right:10px;">
+            <input type="hidden" name="issue_id" value="{{ issue._id }}">
+            <label for="plan">Plan of Execution:</label><br>
+            <textarea id="plan" name="plan" required>{{ issue.plan_of_execution }}</textarea><br>
+            <button type="submit" name="plan">Submit Plan</button>
+        </form>
+        {% if issue.status != 'completed' %}
+        <form method="POST" style="display:inline-block;">
+            <input type="hidden" name="issue_id" value="{{ issue._id }}">
+            <button type="submit" name="complete">Mark as Completed</button>
+        </form>
+        {% endif %}
+        <a href="/admin/location/{{ issue._id }}" target="_blank"><button type="button">View Location</button></a>
+        <div class="map-placeholder">
+            <!-- Map integration placeholder: Use Leaflet.js or Google Maps here -->
+            <div style="width: 300px; height: 200px; background: #eee; text-align: center; line-height: 200px;">Map Here</div>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
+{% endblock %} 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <div>
+        <h2>Login</h2>
+        {% if login_error %}<p style="color:red;">{{ login_error }}</p>{% endif %}
+        <form method="POST">
+            <label for="login_username">Username:</label><br>
+            <input type="text" id="login_username" name="login_username" required><br>
+            <label for="login_password">Password:</label><br>
+            <input type="password" id="login_password" name="login_password" required><br>
+            <label for="login_role">Role:</label><br>
+            <select id="login_role" name="login_role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select><br><br>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+</div>
+{% endblock %} 

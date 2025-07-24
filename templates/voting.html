@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Vote on Issues</h2>
+<h3>Pending Issues</h3>
+<form method="POST">
+{% for issue in pending_issues %}
+    <div class="issue">
+        <p><b>Description:</b> {{ issue.description }}</p>
+        <p><b>Category:</b> {{ issue.category }}</p>
+        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
+        <span>Votes: {{ issue.votes }}</span><br>
+        <button type="submit" name="issue_id" value="{{ issue._id }}" {% if issue.has_voted %}disabled{% endif %}>Vote</button>
+        <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+    </div>
+    <hr>
+{% endfor %}
+</form>
+<h3>Completed Issues</h3>
+{% for issue in completed_issues %}
+    <div class="issue">
+        <p><b>Description:</b> {{ issue.description }}</p>
+        <p><b>Category:</b> {{ issue.category }}</p>
+        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
+        <span>Votes: {{ issue.votes }}</span><br>
+        <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+    </div>
+    <hr>
+{% endfor %}
+{% endblock %} 

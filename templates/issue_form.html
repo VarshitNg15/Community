@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Report an Issue</h2>
+<form method="POST" enctype="multipart/form-data" id="issueForm">
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description" required></textarea><br>
+    <label for="category">Category:</label><br>
+    <select id="category" name="category">
+        <option value="Pothole">Pothole</option>
+        <option value="Garbage">Garbage</option>
+        <option value="Water Leakage">Water Leakage</option>
+        <option value="Streetlight">Streetlight</option>
+        <option value="Road Damage">Road Damage</option>
+        <option value="Other">Other</option>
+    </select><br>
+    <label for="photo">Photo:</label><br>
+    <input type="file" id="photo" name="photo" accept="image/*" required><br>
+    <label>Location:</label><br>
+    <input type="text" id="address" name="address" placeholder="Enter address or place name"><br><br>
+    <div id="leaflet-map" style="width: 100%; height: 300px; margin-bottom: 20px;"></div>
+    <input type="hidden" id="latitude" name="latitude">
+    <input type="hidden" id="longitude" name="longitude">
+    <button type="submit">Submit Issue</button>
+</form>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Leaflet map for selecting location
+var map = L.map('leaflet-map').setView([20.5937, 78.9629], 5); // Center on India
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+var marker;
+map.on('click', function(e) {
+    var lat = e.latlng.lat;
+    var lon = e.latlng.lng;
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lon;
+    if (marker) { map.removeLayer(marker); }
+    marker = L.marker([lat, lon]).addTo(map);
+});
+</script>
+{% endblock %} 

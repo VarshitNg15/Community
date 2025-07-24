@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>User Dashboard</h2>
+<p>Welcome, {{ current_user.username }}!</p>
+<ul>
+    <li><a href="/issue">Report an Issue</a></li>
+    <li><a href="/voting">Vote on Issues</a></li>
+</ul>
+<hr>
+<h3>Pending Issues</h3>
+{% if pending_issues %}
+    <ul>
+    {% for issue in pending_issues %}
+        <li>
+            <b>Description:</b> {{ issue.description }}<br>
+            <b>Category:</b> {{ issue.category }}<br>
+            <b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}<br>
+            <b>Status:</b> {{ issue.status }}<br>
+            <b>Plan of Execution:</b> {{ issue.plan_of_execution or 'Not set' }}<br>
+            <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
+            <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No pending issues submitted yet.</p>
+{% endif %}
+<hr>
+<h3>Completed Issues</h3>
+{% if completed_issues %}
+    <ul>
+    {% for issue in completed_issues %}
+        <li>
+            <b>Description:</b> {{ issue.description }}<br>
+            <b>Category:</b> {{ issue.category }}<br>
+            <b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}<br>
+            <b>Status:</b> {{ issue.status }}<br>
+            <b>Plan of Execution:</b> {{ issue.plan_of_execution or 'Not set' }}<br>
+            <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
+            <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No completed issues yet.</p>
+{% endif %}
+{% endblock %} 

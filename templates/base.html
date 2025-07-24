@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommunitySpotter</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav>
+        {% if current_user.is_authenticated %}
+            {% if current_user.role == 'user' %}
+                <a href="/dashboard">Dashboard</a> |
+                <a href="/issue">Report Issue</a> |
+                <a href="/voting">Voting</a> |
+                <a href="/logout">Logout</a>
+            {% elif current_user.role == 'admin' %}
+                <a href="/admin">Admin Dashboard</a> |
+                <a href="/logout">Logout</a>
+            {% endif %}
+        {% else %}
+            <a href="/">Home</a>
+        {% endif %}
+    </nav>
+    <hr>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html> 

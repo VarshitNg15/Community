@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <div>
+        <h2>Register</h2>
+        {% if register_error %}<p style="color:red;">{{ register_error }}</p>{% endif %}
+        <form method="POST">
+            <label for="register_username">Username:</label><br>
+            <input type="text" id="register_username" name="register_username" required><br>
+            <label for="register_password">Password:</label><br>
+            <input type="password" id="register_password" name="register_password" required><br>
+            <label for="register_confirm_password">Confirm Password:</label><br>
+            <input type="password" id="register_confirm_password" name="register_confirm_password" required><br>
+            <label for="register_role">Role:</label><br>
+            <select id="register_role" name="register_role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select><br><br>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="/">Login here</a></p>
+    </div>
+</div>
+{% endblock %} 

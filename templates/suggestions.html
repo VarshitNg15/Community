@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Suggestions for Issue {{ issue_id }}</h2>
+<form method="POST">
+    <label for="suggestion">Your Suggestion:</label><br>
+    <textarea id="suggestion" name="suggestion" required></textarea><br>
+    <button type="submit">Submit Suggestion</button>
+</form>
+<hr>
+<h3>Existing Suggestions</h3>
+<div id="suggestions-list">
+    {% if suggestions %}
+        <ul>
+        {% for s in suggestions %}
+            <li><b>User:</b> {{ s.user_id }}<br>{{ s.suggestion }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No suggestions yet.</p>
+    {% endif %}
+</div>
+{% endblock %} 

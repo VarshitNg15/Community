@@ -6,4 +6,3 @@ pymongo
 flask-wtf
 wtforms
 Flask-Bcrypt
-python-dotenv 

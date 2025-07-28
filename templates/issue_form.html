@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Report an Issue</h2>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes">
+    {% for category, message in messages %}
+      <li class="flash {{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <form method="POST" enctype="multipart/form-data" id="issueForm">
     <label for="description">Description:</label><br>
     <textarea id="description" name="description" required></textarea><br>

@@ -49,3 +49,13 @@
 #   created_at: datetime,
 #   updated_by: ObjectId (admin)
 # } 
+
+# Report document
+# {
+#   _id: ObjectId,
+#   reporter_id: ObjectId (user who reported),
+#   issue_id: ObjectId (the reported issue),
+#   reason: str,
+#   created_at: datetime,
+#   status: str (e.g., 'pending', 'reviewed', 'dismissed')
+# } 

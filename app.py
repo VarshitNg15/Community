@@ -10,8 +10,8 @@ import os
 
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = 'Enter you mongo uri here'
-app.config['SECRET_KEY'] = 'Enter your secret key here'
+app.config['MONGO_URI'] = 'mongodb+srv://varshitg17:Varshit@community.4u62j8d.mongodb.net/Community?retryWrites=true&w=majority&appName=Community'
+app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
 mongo = PyMongo(app)
@@ -106,6 +106,23 @@ def issue():
         photo = request.files['photo']
         latitude = request.form.get('latitude')
         longitude = request.form.get('longitude')
+        # Duplicate prevention logic
+        duplicate_query = {'category': category, 'status': {'$ne': 'completed'}}
+        if latitude and longitude:
+            try:
+                lat = float(latitude)
+                lon = float(longitude)
+                # Find issues within ~50 meters (0.0005 deg lat/lon)
+                duplicate_query['latitude'] = {'$gte': lat-0.0005, '$lte': lat+0.0005}
+                duplicate_query['longitude'] = {'$gte': lon-0.0005, '$lte': lon+0.0005}
+            except Exception:
+                pass
+        if address:
+            duplicate_query['address'] = address
+        existing = mongo.db.issues.find_one(duplicate_query)
+        if existing:
+            flash('A similar issue already exists at this location/category. Please check before submitting again.', 'warning')
+            return render_template('issue_form.html')
         if photo and allowed_file(photo.filename):
             filename = secure_filename(photo.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -132,6 +149,27 @@ def issue():
         flash('Issue submitted successfully!', 'success')
         return redirect(url_for('dashboard'))
     return render_template('issue_form.html')
+
+# --- REPORTING FEATURE ---
+@app.route('/report_issue', methods=['POST'])
+@login_required
+def report_issue():
+    issue_id = request.form['issue_id']
+    reason = request.form.get('reason', 'No reason provided')
+    # Prevent duplicate reports by same user
+    if mongo.db.reports.find_one({'reporter_id': ObjectId(current_user.id), 'issue_id': ObjectId(issue_id)}):
+        flash('You have already reported this issue.', 'warning')
+        return redirect(url_for('voting'))
+    report_doc = {
+        'reporter_id': ObjectId(current_user.id),
+        'issue_id': ObjectId(issue_id),
+        'reason': reason,
+        'created_at': datetime.utcnow(),
+        'status': 'pending'
+    }
+    mongo.db.reports.insert_one(report_doc)
+    flash('Issue reported to admin for review.', 'success')
+    return redirect(url_for('voting'))
 
 @app.route('/voting', methods=['GET', 'POST'])
 @login_required
@@ -180,6 +218,13 @@ def admin_dashboard():
         return redirect(url_for('dashboard'))
     issues = list(mongo.db.issues.find())
     suggestions_map = {str(i['_id']): list(mongo.db.suggestions.find({'issue_id': i['_id']})) for i in issues}
+    # Fetch reported issues
+    reported_issues = list(mongo.db.reports.find({'status': 'pending'}))
+    reports_map = {}
+    for report in reported_issues:
+        issue = mongo.db.issues.find_one({'_id': report['issue_id']})
+        if issue:
+            reports_map[str(report['issue_id'])] = reports_map.get(str(report['issue_id']), []) + [report]
     if request.method == 'POST':
         issue_id = request.form['issue_id']
         if 'plan' in request.form:
@@ -188,9 +233,10 @@ def admin_dashboard():
         elif 'complete' in request.form:
             mongo.db.issues.update_one({'_id': ObjectId(issue_id)}, {'$set': {'status': 'completed'}})
             flash('Issue marked completed!', 'success')
+        # Optionally: handle report review here
         return redirect(url_for('admin_dashboard'))
     votes_map = {str(i['_id']): mongo.db.votes.count_documents({'issue_id': i['_id']}) for i in issues}
-    return render_template('admin_dashboard.html', issues=issues, suggestions_map=suggestions_map, votes_map=votes_map)
+    return render_template('admin_dashboard.html', issues=issues, suggestions_map=suggestions_map, votes_map=votes_map, reports_map=reports_map)
 
 @app.route('/admin/location/<issue_id>')
 @login_required

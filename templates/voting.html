@@ -2,7 +2,6 @@
 {% block content %}
 <h2>Vote on Issues</h2>
 <h3>Pending Issues</h3>
-<form method="POST">
 {% for issue in pending_issues %}
     <div class="issue">
         <p><b>Description:</b> {{ issue.description }}</p>
@@ -10,12 +9,21 @@
         <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
         <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
         <span>Votes: {{ issue.votes }}</span><br>
-        <button type="submit" name="issue_id" value="{{ issue._id }}" {% if issue.has_voted %}disabled{% endif %}>Vote</button>
+        <!-- Vote form -->
+        <form method="POST" action="/voting" style="display:inline;">
+            <input type="hidden" name="issue_id" value="{{ issue._id }}">
+            <button type="submit" {% if issue.has_voted %}disabled{% endif %}>Vote</button>
+        </form>
         <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+        <!-- Report form -->
+        <form method="POST" action="/report_issue" style="display:inline;">
+            <input type="hidden" name="issue_id" value="{{ issue._id }}">
+            <input type="text" name="reason" placeholder="Reason for report (optional)">
+            <button type="submit">Report</button>
+        </form>
     </div>
     <hr>
 {% endfor %}
-</form>
 <h3>Completed Issues</h3>
 {% for issue in completed_issues %}
     <div class="issue">

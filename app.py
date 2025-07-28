@@ -10,7 +10,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = 'mongodb+srv://varshitg17:Varshit@community.4u62j8d.mongodb.net/Community?retryWrites=true&w=majority&appName=Community'
+app.config['MONGO_URI'] = 'Enter your mongo uri here'
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 

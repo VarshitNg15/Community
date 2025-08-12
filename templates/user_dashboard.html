@@ -1,47 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>User Dashboard</h2>
-<p>Welcome, {{ current_user.username }}!</p>
-<ul>
-    <li><a href="/issue">Report an Issue</a></li>
-    <li><a href="/voting">Vote on Issues</a></li>
-</ul>
-<hr>
-<h3>Pending Issues</h3>
-{% if pending_issues %}
+<div class="card">
+  <h2><i class="bi bi-person-circle"></i> User Dashboard</h2>
+  <p style="font-size: 1.2em; color: #4979f7; margin-bottom: 2rem;">Welcome, {{ current_user.username }}!</p>
+  
+  <div style="margin-bottom: 2rem;">
+    <a href="/issue" class="btn"><i class="bi bi-plus-circle"></i> Report an Issue</a>
+    <a href="/voting" class="btn" style="margin-left: 1rem;"><i class="bi bi-check2-square"></i> Vote on Issues</a>
+  </div>
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-clock-history"></i> Pending Issues</h3>
+  {% if pending_issues %}
     <ul>
     {% for issue in pending_issues %}
-        <li>
-            <b>Description:</b> {{ issue.description }}<br>
-            <b>Category:</b> {{ issue.category }}<br>
-            <b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}<br>
-            <b>Status:</b> {{ issue.status }}<br>
-            <b>Plan of Execution:</b> {{ issue.plan_of_execution or 'Not set' }}<br>
-            <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-            <a href="/suggestions/{{ issue._id }}">Suggestions</a>
-        </li>
+      <li>
+        <div style="display: flex; align-items: start; gap: 1rem;">
+          <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0;">
+          <div style="flex: 1;">
+            <p><strong>Description:</strong> {{ issue.description }}</p>
+            <p><strong>Category:</strong> <span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+            <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+            <p><strong>Status:</strong> <span style="background: #fff3e0; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.status }}</span></p>
+            <p><strong>Plan of Execution:</strong> {{ issue.plan_of_execution or 'Not set' }}</p>
+            <a href="/suggestions/{{ issue._id }}" class="btn" style="margin-top: 0.5rem;">View Suggestions</a>
+          </div>
+        </div>
+      </li>
     {% endfor %}
     </ul>
-{% else %}
-    <p>No pending issues submitted yet.</p>
-{% endif %}
-<hr>
-<h3>Completed Issues</h3>
-{% if completed_issues %}
+  {% else %}
+    <p style="text-align: center; color: #666; font-style: italic;">No pending issues submitted yet.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-check-circle"></i> Completed Issues</h3>
+  {% if completed_issues %}
     <ul>
     {% for issue in completed_issues %}
-        <li>
-            <b>Description:</b> {{ issue.description }}<br>
-            <b>Category:</b> {{ issue.category }}<br>
-            <b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}<br>
-            <b>Status:</b> {{ issue.status }}<br>
-            <b>Plan of Execution:</b> {{ issue.plan_of_execution or 'Not set' }}<br>
-            <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-            <a href="/suggestions/{{ issue._id }}">Suggestions</a>
-        </li>
+      <li>
+        <div style="display: flex; align-items: start; gap: 1rem;">
+          <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0;">
+          <div style="flex: 1;">
+            <p><strong>Description:</strong> {{ issue.description }}</p>
+            <p><strong>Category:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+            <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+            <p><strong>Status:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.status }}</span></p>
+            <p><strong>Plan of Execution:</strong> {{ issue.plan_of_execution or 'Not set' }}</p>
+            <a href="/suggestions/{{ issue._id }}" class="btn" style="margin-top: 0.5rem;">View Suggestions</a>
+          </div>
+        </div>
+      </li>
     {% endfor %}
     </ul>
-{% else %}
-    <p>No completed issues yet.</p>
-{% endif %}
+  {% else %}
+    <p style="text-align: center; color: #666; font-style: italic;">No completed issues yet.</p>
+  {% endif %}
+</div>
 {% endblock %} 

@@ -1,39 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Vote on Issues</h2>
-<h3>Pending Issues</h3>
-{% for issue in pending_issues %}
-    <div class="issue">
-        <p><b>Description:</b> {{ issue.description }}</p>
-        <p><b>Category:</b> {{ issue.category }}</p>
-        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
-        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-        <span>Votes: {{ issue.votes }}</span><br>
-        <!-- Vote form -->
-        <form method="POST" action="/voting" style="display:inline;">
-            <input type="hidden" name="issue_id" value="{{ issue._id }}">
-            <button type="submit" {% if issue.has_voted %}disabled{% endif %}>Vote</button>
-        </form>
-        <a href="/suggestions/{{ issue._id }}">Suggestions</a>
-        <!-- Report form -->
-        <form method="POST" action="/report_issue" style="display:inline;">
-            <input type="hidden" name="issue_id" value="{{ issue._id }}">
-            <input type="text" name="reason" placeholder="Reason for report (optional)">
-            <button type="submit">Report</button>
-        </form>
+<div class="card">
+  <h2><i class="bi bi-check2-square"></i> Vote on Issues</h2>
+  <p style="color: #4979f7; font-size: 1.1em;">Help prioritize community issues by voting on them!</p>
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-clock-history"></i> Pending Issues</h3>
+  {% for issue in pending_issues %}
+    <div class="issue" style="background: rgba(255,255,255,0.7); margin-bottom: 1.5rem; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(151, 118, 255, 0.1); border: 1px solid rgba(255,255,255,0.5);">
+      <div style="display: flex; align-items: start; gap: 1rem;">
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0; border-radius: 10px;">
+        <div style="flex: 1;">
+          <p><strong>Description:</strong> {{ issue.description }}</p>
+          <p><strong>Category:</strong> <span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+          <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+          <p><strong>Votes:</strong> <span style="background: #fff3e0; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.votes }}</span></p>
+          
+          <div style="margin-top: 1rem;">
+            <!-- Vote form -->
+            <form method="POST" action="/voting" style="display:inline; margin-right: 0.5rem;">
+              <input type="hidden" name="issue_id" value="{{ issue._id }}">
+              <button type="submit" class="btn" {% if issue.has_voted %}disabled style="opacity: 0.6;"{% endif %}>
+                <i class="bi bi-hand-thumbs-up"></i> Vote
+              </button>
+            </form>
+            <a href="/suggestions/{{ issue._id }}" class="btn" style="margin-right: 0.5rem;">
+              <i class="bi bi-chat-dots"></i> Suggestions
+            </a>
+            
+            <!-- Report form -->
+            <form method="POST" action="/report_issue" style="display:inline;">
+              <input type="hidden" name="issue_id" value="{{ issue._id }}">
+              <input type="text" name="reason" placeholder="Reason for report (optional)" style="padding: 0.5rem; border: 1px solid #b6ccff; border-radius: 5px; margin-right: 0.5rem;">
+              <button type="submit" class="btn" style="background: #e74c3c;">
+                <i class="bi bi-flag"></i> Report
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-    <hr>
-{% endfor %}
-<h3>Completed Issues</h3>
-{% for issue in completed_issues %}
-    <div class="issue">
-        <p><b>Description:</b> {{ issue.description }}</p>
-        <p><b>Category:</b> {{ issue.category }}</p>
-        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
-        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-        <span>Votes: {{ issue.votes }}</span><br>
-        <a href="/suggestions/{{ issue._id }}">Suggestions</a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-check-circle"></i> Completed Issues</h3>
+  {% for issue in completed_issues %}
+    <div class="issue" style="background: rgba(255,255,255,0.7); margin-bottom: 1.5rem; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(151, 118, 255, 0.1); border: 1px solid rgba(255,255,255,0.5);">
+      <div style="display: flex; align-items: start; gap: 1rem;">
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0; border-radius: 10px;">
+        <div style="flex: 1;">
+          <p><strong>Description:</strong> {{ issue.description }}</p>
+          <p><strong>Category:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+          <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+          <p><strong>Votes:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.votes }}</span></p>
+          
+          <div style="margin-top: 1rem;">
+            <a href="/suggestions/{{ issue._id }}" class="btn">
+              <i class="bi bi-chat-dots"></i> Suggestions
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-    <hr>
-{% endfor %}
+  {% endfor %}
+</div>
 {% endblock %} 

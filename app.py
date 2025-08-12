@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
+from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory, make_response
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
@@ -10,7 +10,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = 'Enter your mongo uri here'
+app.config['MONGO_URI'] = 'mongodb+srv://varshitg17:Varshit@community.4u62j8d.mongodb.net/Community?retryWrites=true&w=majority&appName=Community'
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
@@ -18,6 +18,8 @@ mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'home'
+
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -39,6 +41,8 @@ class User(UserMixin):
 def load_user(user_id):
     return User.get(user_id)
 
+# Remove cache control middleware and /confirm_logout route
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
@@ -56,6 +60,23 @@ def home():
             return redirect(url_for('admin_dashboard' if user.role == 'admin' else 'dashboard'))
         login_error = 'Invalid credentials.'
     return render_template('home.html', login_error=login_error)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard' if current_user.role == 'admin' else 'dashboard'))
+    login_error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user_doc = mongo.db.users.find_one({'username': username})
+        if user_doc and bcrypt.check_password_hash(user_doc['password'], password):
+            user = User(user_doc)
+            login_user(user)
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('admin_dashboard' if user.role == 'admin' else 'dashboard'))
+        login_error = 'Invalid credentials.'
+    return render_template('login.html', login_error=login_error)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -83,7 +104,11 @@ def register():
 def logout():
     logout_user()
     flash('Logged out successfully.', 'success')
-    return redirect(url_for('home'))
+    response = make_response(redirect(url_for('home')))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, private, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 @app.route('/dashboard')
 @login_required

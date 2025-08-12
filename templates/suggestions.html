@@ -1,22 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Suggestions for Issue {{ issue_id }}</h2>
-<form method="POST">
-    <label for="suggestion">Your Suggestion:</label><br>
-    <textarea id="suggestion" name="suggestion" required></textarea><br>
-    <button type="submit">Submit Suggestion</button>
-</form>
-<hr>
-<h3>Existing Suggestions</h3>
-<div id="suggestions-list">
+<div class="card">
+  <h2><i class="bi bi-lightbulb"></i> Suggestions for Issue {{ issue_id }}</h2>
+  <p style="color: #4979f7; font-size: 1.1em;">Share your ideas and solutions for this community issue.</p>
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-plus-circle"></i> Add Your Suggestion</h3>
+  <form method="POST">
+    <div class="form-group">
+      <label for="suggestion">Your Suggestion:</label>
+      <textarea id="suggestion" name="suggestion" required placeholder="Share your idea or solution for this issue..."></textarea>
+    </div>
+    <button type="submit" class="btn">
+      <i class="bi bi-send"></i> Submit Suggestion
+    </button>
+  </form>
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-chat-dots"></i> Existing Suggestions</h3>
+  <div id="suggestions-list">
     {% if suggestions %}
-        <ul>
-        {% for s in suggestions %}
-            <li><b>User:</b> {{ s.user_id }}<br>{{ s.suggestion }}</li>
-        {% endfor %}
-        </ul>
+      <ul>
+      {% for s in suggestions %}
+        <li style="background: rgba(255,255,255,0.7); margin-bottom: 1rem; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(151, 118, 255, 0.1); border: 1px solid rgba(255,255,255,0.5);">
+          <p><strong>User:</strong> <span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ s.user_id }}</span></p>
+          <p style="margin-top: 0.5rem; font-size: 1.1em;">{{ s.suggestion }}</p>
+        </li>
+      {% endfor %}
+      </ul>
     {% else %}
-        <p>No suggestions yet.</p>
+      <p style="text-align: center; color: #666; font-style: italic;">No suggestions yet. Be the first to share your idea!</p>
     {% endif %}
+  </div>
 </div>
 {% endblock %} 

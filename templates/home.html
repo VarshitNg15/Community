@@ -1,22 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="display: flex; flex-direction: column; align-items: center;">
-    <div>
-        <h2>Login</h2>
-        {% if login_error %}<p style="color:red;">{{ login_error }}</p>{% endif %}
-        <form method="POST">
-            <label for="login_username">Username:</label><br>
-            <input type="text" id="login_username" name="login_username" required><br>
-            <label for="login_password">Password:</label><br>
-            <input type="password" id="login_password" name="login_password" required><br>
-            <label for="login_role">Role:</label><br>
-            <select id="login_role" name="login_role">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select><br><br>
-            <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
-    </div>
+<!-- HERO/Headline Section -->
+<div class="home-hero">
+  <h1>Welcome to Community Connect!</h1>
+  <p>
+    Empower your community by reporting, managing, and tracking issues—  
+    all with a stunning, easy-to-use interface designed to inspire action and collaboration.
+  </p>
+  <a href="/login" class="cta-btn">Get Started</a>
 </div>
-{% endblock %} 
+
+<!-- Feature/Benefit Cards -->
+<div class="feature-row">
+  <div class="feature-card">
+    <i class="bi bi-geo-alt-fill"></i>
+    <h3>Location-Based Reports</h3>
+    <p>Pin and visualize problems in your neighborhood <br> using dynamic maps and fast photo uploads.</p>
+  </div>
+  <div class="feature-card">
+    <i class="bi bi-people-fill"></i>
+    <h3>Community Voting</h3>
+    <p>Vote, discuss, and suggest solutions—helping prioritize what matters most, together.</p>
+  </div>
+  <div class="feature-card">
+    <i class="bi bi-trophy-fill"></i>
+    <h3>Reward & Recognition</h3>
+    <p>Top contributors earn badges and recognition for making a real difference.</p>
+  </div>
+</div>
+{% endblock %}

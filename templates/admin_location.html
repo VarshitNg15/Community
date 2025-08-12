@@ -1,15 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Issue Location</h2>
-<p><b>Description:</b> {{ issue.description }}</p>
-<p><b>Category:</b> {{ issue.category }}</p>
-{% if issue.latitude and issue.longitude %}
-    <iframe width="100%" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps?q={{ issue.latitude }},{{ issue.longitude }}&output=embed" allowfullscreen></iframe>
-    <p>Coordinates: {{ issue.latitude }}, {{ issue.longitude }}</p>
-{% elif issue.address %}
-    <iframe width="100%" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps?q={{ issue.address|urlencode }}&output=embed" allowfullscreen></iframe>
-    <p>Address: {{ issue.address }}</p>
-{% else %}
-    <p>Location not available.</p>
-{% endif %}
+<div class="card">
+  <h2><i class="bi bi-geo-alt"></i> Issue Location</h2>
+  <p style="color: #4979f7; font-size: 1.1em;">View the exact location of this community issue.</p>
+</div>
+
+<div class="card">
+  <div style="margin-bottom: 1.5rem;">
+    <p><strong>Description:</strong> {{ issue.description }}</p>
+    <p><strong>Category:</strong> <span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+  </div>
+  
+  {% if issue.latitude and issue.longitude %}
+    <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <iframe width="100%" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps?q={{ issue.latitude }},{{ issue.longitude }}&output=embed" allowfullscreen></iframe>
+    </div>
+    <p style="margin-top: 1rem; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 10px;">
+      <strong>Coordinates:</strong> {{ issue.latitude }}, {{ issue.longitude }}
+    </p>
+  {% elif issue.address %}
+    <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <iframe width="100%" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps?q={{ issue.address|urlencode }}&output=embed" allowfullscreen></iframe>
+    </div>
+    <p style="margin-top: 1rem; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 10px;">
+      <strong>Address:</strong> {{ issue.address }}
+    </p>
+  {% else %}
+    <div style="background: rgba(255,255,255,0.7); padding: 2rem; border-radius: 15px; text-align: center; color: #666;">
+      <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #f39c12; margin-bottom: 1rem;"></i>
+      <p>Location not available.</p>
+    </div>
+  {% endif %}
+</div>
 {% endblock %} 

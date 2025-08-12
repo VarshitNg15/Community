@@ -1,36 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Report an Issue</h2>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flashes">
-    {% for category, message in messages %}
-      <li class="flash {{ category }}">{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-<form method="POST" enctype="multipart/form-data" id="issueForm">
-    <label for="description">Description:</label><br>
-    <textarea id="description" name="description" required></textarea><br>
-    <label for="category">Category:</label><br>
-    <select id="category" name="category">
+<div class="card">
+  <h2><i class="bi bi-plus-circle"></i> Report an Issue</h2>
+  <p style="color: #4979f7; font-size: 1.1em;">Help improve your community by reporting issues that need attention.</p>
+</div>
+
+<div class="card">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="flash {{ category }}">{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  
+  <form method="POST" enctype="multipart/form-data" id="issueForm">
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required placeholder="Describe the issue in detail..."></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="category">Category:</label>
+      <select id="category" name="category">
         <option value="Pothole">Pothole</option>
         <option value="Garbage">Garbage</option>
         <option value="Water Leakage">Water Leakage</option>
         <option value="Streetlight">Streetlight</option>
         <option value="Road Damage">Road Damage</option>
         <option value="Other">Other</option>
-    </select><br>
-    <label for="photo">Photo:</label><br>
-    <input type="file" id="photo" name="photo" accept="image/*" required><br>
-    <label>Location:</label><br>
-    <input type="text" id="address" name="address" placeholder="Enter address or place name"><br><br>
-    <div id="leaflet-map" style="width: 100%; height: 300px; margin-bottom: 20px;"></div>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="photo">Photo:</label>
+      <input type="file" id="photo" name="photo" accept="image/*" required>
+    </div>
+    
+    <div class="form-group">
+      <label>Location:</label>
+      <input type="text" id="address" name="address" placeholder="Enter address or place name">
+    </div>
+    
+    <div class="form-group">
+      <label>Select Location on Map:</label>
+      <div id="leaflet-map" style="width: 100%; height: 300px; border-radius: 10px; border: 2px solid #b6ccff;"></div>
+    </div>
+    
     <input type="hidden" id="latitude" name="latitude">
     <input type="hidden" id="longitude" name="longitude">
-    <button type="submit">Submit Issue</button>
-</form>
+    
+    <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; padding: 1rem;">
+      <i class="bi bi-send"></i> Submit Issue
+    </button>
+  </form>
+</div>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>

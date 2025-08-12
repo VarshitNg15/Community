@@ -1,80 +1,119 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<h3>Pending Issues</h3>
-{% for issue in issues if issue.status != 'completed' %}
-    <div class="issue">
-        <p><b>Description:</b> {{ issue.description }}</p>
-        <p><b>Category:</b> {{ issue.category }}</p>
-        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
-        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-        <span>Votes: {{ votes_map[issue._id|string] }}</span><br>
-        <h4>Suggestions:</h4>
-        <ul>
-        {% for s in suggestions_map[issue._id|string] %}
-            <li>{{ s.suggestion }}</li>
-        {% endfor %}
-        </ul>
-        <!-- Show reports if any -->
-        {% if reports_map[issue._id|string] %}
-        <div class="reports">
-            <h4>Reports:</h4>
-            <ul>
-            {% for report in reports_map[issue._id|string] %}
-                <li><b>Reason:</b> {{ report.reason }} | <b>By User:</b> {{ report.reporter_id }}</li>
-            {% endfor %}
-            </ul>
+<div class="card">
+  <h2><i class="bi bi-shield-check"></i> Admin Dashboard</h2>
+  <p style="color: #4979f7; font-size: 1.1em;">Manage and oversee community issues from this central control panel.</p>
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-clock-history"></i> Pending Issues</h3>
+  {% for issue in issues if issue.status != 'completed' %}
+    <div class="issue" style="background: rgba(255,255,255,0.7); margin-bottom: 2rem; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(151, 118, 255, 0.1); border: 1px solid rgba(255,255,255,0.5);">
+      <div style="display: flex; align-items: start; gap: 1rem;">
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0; border-radius: 10px;">
+        <div style="flex: 1;">
+          <p><strong>Description:</strong> {{ issue.description }}</p>
+          <p><strong>Category:</strong> <span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+          <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+          <p><strong>Votes:</strong> <span style="background: #fff3e0; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ votes_map[issue._id|string] }}</span></p>
+          
+          {% if suggestions_map[issue._id|string] %}
+            <div style="margin: 1rem 0;">
+              <h4 style="color: #4979f7; margin-bottom: 0.5rem;"><i class="bi bi-lightbulb"></i> Suggestions:</h4>
+              <ul style="background: rgba(255,255,255,0.5); padding: 1rem; border-radius: 10px; margin: 0;">
+                {% for s in suggestions_map[issue._id|string] %}
+                  <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.7); border-radius: 5px;">{{ s.suggestion }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          
+          {% if reports_map[issue._id|string] %}
+            <div style="margin: 1rem 0;">
+              <h4 style="color: #e74c3c; margin-bottom: 0.5rem;"><i class="bi bi-flag"></i> Reports:</h4>
+              <ul style="background: rgba(255,255,255,0.5); padding: 1rem; border-radius: 10px; margin: 0;">
+                {% for report in reports_map[issue._id|string] %}
+                  <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.7); border-radius: 5px;">
+                    <strong>Reason:</strong> {{ report.reason }} | <strong>By User:</strong> {{ report.reporter_id }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          
+          <div style="margin-top: 1.5rem;">
+            <form method="POST" style="display:inline-block; margin-right:1rem;">
+              <input type="hidden" name="issue_id" value="{{ issue._id }}">
+              <div class="form-group">
+                <label for="plan">Plan of Execution:</label>
+                <textarea id="plan" name="plan" required placeholder="Enter your plan of execution...">{{ issue.plan_of_execution }}</textarea>
+              </div>
+              <button type="submit" name="plan" class="btn">
+                <i class="bi bi-pencil"></i> Submit Plan
+              </button>
+            </form>
+            
+            <form method="POST" style="display:inline-block; margin-right:1rem;">
+              <input type="hidden" name="issue_id" value="{{ issue._id }}">
+              <button type="submit" name="complete" class="btn" style="background: #27ae60;">
+                <i class="bi bi-check-circle"></i> Mark as Completed
+              </button>
+            </form>
+            
+            <a href="/admin/location/{{ issue._id }}" target="_blank" class="btn" style="background: #3498db;">
+              <i class="bi bi-geo-alt"></i> View Location
+            </a>
+          </div>
         </div>
-        {% endif %}
-        <form method="POST" style="display:inline-block; margin-right:10px;">
-            <input type="hidden" name="issue_id" value="{{ issue._id }}">
-            <label for="plan">Plan of Execution:</label><br>
-            <textarea id="plan" name="plan" required>{{ issue.plan_of_execution }}</textarea><br>
-            <button type="submit" name="plan">Submit Plan</button>
-        </form>
-        <form method="POST" style="display:inline-block;">
-            <input type="hidden" name="issue_id" value="{{ issue._id }}">
-            <button type="submit" name="complete">Mark as Completed</button>
-        </form>
-        <a href="/admin/location/{{ issue._id }}" target="_blank"><button type="button">View Location</button></a>
-        <div class="map-placeholder">
-            <!-- Map integration placeholder: Use Leaflet.js or Google Maps here -->
-            <div style="width: 300px; height: 200px; background: #eee; text-align: center; line-height: 200px;">Map Here</div>
-        </div>
+      </div>
     </div>
-    <hr>
-{% endfor %}
-<h3>Completed Issues</h3>
-{% for issue in issues if issue.status == 'completed' %}
-    <div class="issue completed">
-        <p><b>Description:</b> {{ issue.description }}</p>
-        <p><b>Category:</b> {{ issue.category }}</p>
-        <p><b>Location:</b> {{ issue.address if issue.address else 'Location not available' }}</p>
-        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120"><br>
-        <span>Votes: {{ votes_map[issue._id|string] }}</span><br>
-        <h4>Suggestions:</h4>
-        <ul>
-        {% for s in suggestions_map[issue._id|string] %}
-            <li>{{ s.suggestion }}</li>
-        {% endfor %}
-        </ul>
-        <!-- Show reports if any -->
-        {% if reports_map[issue._id|string] %}
-        <div class="reports">
-            <h4>Reports:</h4>
-            <ul>
-            {% for report in reports_map[issue._id|string] %}
-                <li><b>Reason:</b> {{ report.reason }} | <b>By User:</b> {{ report.reporter_id }}</li>
-            {% endfor %}
-            </ul>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h3><i class="bi bi-check-circle"></i> Completed Issues</h3>
+  {% for issue in issues if issue.status == 'completed' %}
+    <div class="issue completed" style="background: rgba(255,255,255,0.7); margin-bottom: 2rem; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(151, 118, 255, 0.1); border: 1px solid rgba(255,255,255,0.5);">
+      <div style="display: flex; align-items: start; gap: 1rem;">
+        <img src="/uploads/{{ issue.photo_filename }}" alt="Issue Photo" width="120" style="flex-shrink: 0; border-radius: 10px;">
+        <div style="flex: 1;">
+          <p><strong>Description:</strong> {{ issue.description }}</p>
+          <p><strong>Category:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ issue.category }}</span></p>
+          <p><strong>Location:</strong> {{ issue.address if issue.address else 'Location not available' }}</p>
+          <p><strong>Votes:</strong> <span style="background: #e8f5e8; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9em;">{{ votes_map[issue._id|string] }}</span></p>
+          
+          {% if suggestions_map[issue._id|string] %}
+            <div style="margin: 1rem 0;">
+              <h4 style="color: #4979f7; margin-bottom: 0.5rem;"><i class="bi bi-lightbulb"></i> Suggestions:</h4>
+              <ul style="background: rgba(255,255,255,0.5); padding: 1rem; border-radius: 10px; margin: 0;">
+                {% for s in suggestions_map[issue._id|string] %}
+                  <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.7); border-radius: 5px;">{{ s.suggestion }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          
+          {% if reports_map[issue._id|string] %}
+            <div style="margin: 1rem 0;">
+              <h4 style="color: #e74c3c; margin-bottom: 0.5rem;"><i class="bi bi-flag"></i> Reports:</h4>
+              <ul style="background: rgba(255,255,255,0.5); padding: 1rem; border-radius: 10px; margin: 0;">
+                {% for report in reports_map[issue._id|string] %}
+                  <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.7); border-radius: 5px;">
+                    <strong>Reason:</strong> {{ report.reason }} | <strong>By User:</strong> {{ report.reporter_id }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          
+          <div style="margin-top: 1.5rem;">
+            <a href="/admin/location/{{ issue._id }}" target="_blank" class="btn" style="background: #3498db;">
+              <i class="bi bi-geo-alt"></i> View Location
+            </a>
+          </div>
         </div>
-        {% endif %}
-        <a href="/admin/location/{{ issue._id }}" target="_blank"><button type="button">View Location</button></a>
-        <div class="map-placeholder">
-            <!-- Map integration placeholder: Use Leaflet.js or Google Maps here -->
-            <div style="width: 300px; height: 200px; background: #eee; text-align: center; line-height: 200px;">Map Here</div>
-        </div>
+      </div>
     </div>
-    <hr>
-{% endfor %}
+  {% endfor %}
+</div>
 {% endblock %} 

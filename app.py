@@ -6,11 +6,12 @@ from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = 'Your URI here'
+app.config['MONGO_URI'] = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/community_db')
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 

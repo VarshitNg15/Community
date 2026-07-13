@@ -1,4 +1,4 @@
-# Community Issue Management System
+# UrbanResolve: Civic Issue Platform
 
 A Flask-based web application for community issue reporting, voting, and management. This platform allows community members to report local issues, vote on important problems, and collaborate with administrators to resolve community concerns.
 
@@ -38,7 +38,7 @@ A Flask-based web application for community issue reporting, voting, and managem
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd Community
+cd UrbanResolve
 ```
 
 ### 2. Create Virtual Environment
